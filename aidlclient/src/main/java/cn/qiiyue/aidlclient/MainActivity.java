@@ -9,7 +9,10 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+
+import cn.qiiyue.aidlserver.ICalculator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "serviceConnection onServiceDisconnected");
             iCalculator = null;
         }
     };
@@ -40,12 +44,17 @@ public class MainActivity extends AppCompatActivity {
         intent.setComponent(new ComponentName("cn.qiiyue.aidlserver", "cn.qiiyue.aidlserver.RemoteServer"));
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
-        try {
-            int result = iCalculator.add(1, 2);
-            tv.setText(result);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    int result = iCalculator.add(1, 2);
+                    Log.d(TAG, "result: " + result);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 

@@ -1,5 +1,5 @@
 // ICalculator.aidl
-package cn.qiiyue.aidlclient;
+package cn.qiiyue.aidlserver;
 
 // Declare any non-default types here with import statements
 
