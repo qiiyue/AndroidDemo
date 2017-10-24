@@ -71,4 +71,9 @@ public class MessageBean implements Parcelable {
         this.content = content;
     }
 
+    @Override
+    public String toString() {
+        return "name: " + name + ", content: " + content;
+    }
+
 }

@@ -1,7 +1,7 @@
 // ICalculator.aidl
-package cn.qiiyue.cn.qiiyue.aidlserver;
+package cn.qiiyue.aidlserver;
 
-import cn.qiiyue.cn.qiiyue.aidlserver.MessageBean;
+import cn.qiiyue.aidlserver.MessageBean;
 
 // Declare any non-default types here with import statements
 

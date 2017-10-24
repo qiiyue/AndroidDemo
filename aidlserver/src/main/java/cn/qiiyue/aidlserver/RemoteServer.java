@@ -19,8 +19,8 @@ public class RemoteServer extends Service {
 
         @Override
         public MessageBean getMessageBean() throws RemoteException {
-//            MessageBean messageBean = new MessageBean("Kobe", "black mamba");
-            return null;
+            MessageBean messageBean = new MessageBean("Kobe", "black mamba");
+            return messageBean;
         }
 
         @Override

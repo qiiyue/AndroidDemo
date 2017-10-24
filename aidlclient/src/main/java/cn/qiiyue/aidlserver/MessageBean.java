@@ -26,15 +26,15 @@ public class MessageBean implements Parcelable {
         content = in.readString();
     }
 
-    public static final Creator<cn.qiiyue.aidlserver.MessageBean> CREATOR = new Creator<cn.qiiyue.aidlserver.MessageBean>() {
+    public static final Creator<MessageBean> CREATOR = new Creator<MessageBean>() {
         @Override
-        public cn.qiiyue.aidlserver.MessageBean createFromParcel(Parcel in) {
-            return new cn.qiiyue.aidlserver.MessageBean(in);
+        public MessageBean createFromParcel(Parcel in) {
+            return new MessageBean(in);
         }
 
         @Override
-        public cn.qiiyue.aidlserver.MessageBean[] newArray(int size) {
-            return new cn.qiiyue.aidlserver.MessageBean[size];
+        public MessageBean[] newArray(int size) {
+            return new MessageBean[size];
         }
     };
 
@@ -69,6 +69,11 @@ public class MessageBean implements Parcelable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "name: " + name + ", content: " + content;
     }
 
 }

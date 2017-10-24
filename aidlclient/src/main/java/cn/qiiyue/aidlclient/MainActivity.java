@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView tv = (TextView) findViewById(R.id.tv);
 
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName("cn.qiiyue.cn.qiiyue.aidlserver", "cn.qiiyue.cn.qiiyue.aidlserver.RemoteServer"));
+        intent.setComponent(new ComponentName("cn.qiiyue.aidlserver", "cn.qiiyue.aidlserver.RemoteServer"));
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
         tv.setOnClickListener(new View.OnClickListener() {
@@ -55,11 +55,16 @@ public class MainActivity extends AppCompatActivity {
 
                     MessageBean messageBean = new MessageBean("clinet", "this is client");
                     MessageBean msg1 = iCalculator.getMessageBean();
-                    Log.d(TAG, "msg1: " + msg1.toString());
+                    if (msg1 != null) {
+                        Log.d(TAG, "msg1: " + msg1.toString());
+                    }
 
                     iCalculator.messageIn(messageBean);
+                    Log.d(TAG, "msg2: " + messageBean);
                     iCalculator.messageOut(messageBean);
+                    Log.d(TAG, "msg3: " + messageBean);
                     iCalculator.messageInOut(messageBean);
+                    Log.d(TAG, "msg4: " + messageBean);
 
                 } catch (RemoteException e) {
                     e.printStackTrace();
