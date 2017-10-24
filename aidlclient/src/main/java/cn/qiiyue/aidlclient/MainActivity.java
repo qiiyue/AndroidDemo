@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import cn.qiiyue.aidlserver.ICalculator;
+import cn.qiiyue.aidlserver.MessageBean;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView tv = (TextView) findViewById(R.id.tv);
+        final TextView tv = (TextView) findViewById(R.id.tv);
 
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName("cn.qiiyue.aidlserver", "cn.qiiyue.aidlserver.RemoteServer"));
+        intent.setComponent(new ComponentName("cn.qiiyue.cn.qiiyue.aidlserver", "cn.qiiyue.cn.qiiyue.aidlserver.RemoteServer"));
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
         tv.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +51,16 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     int result = iCalculator.add(1, 2);
                     Log.d(TAG, "result: " + result);
+                    tv.setText("结果：" + result);
+
+                    MessageBean messageBean = new MessageBean("clinet", "this is client");
+                    MessageBean msg1 = iCalculator.getMessageBean();
+                    Log.d(TAG, "msg1: " + msg1.toString());
+
+                    iCalculator.messageIn(messageBean);
+                    iCalculator.messageOut(messageBean);
+                    iCalculator.messageInOut(messageBean);
+
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -63,4 +74,5 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         unbindService(serviceConnection);
     }
+
 }

@@ -14,8 +14,32 @@ public class RemoteServer extends Service {
 
         @Override
         public int add(int a, int b) throws RemoteException {
-            Log.d(TAG, "RemoteServer add");
             return a + b;
+        }
+
+        @Override
+        public MessageBean getMessageBean() throws RemoteException {
+//            MessageBean messageBean = new MessageBean("Kobe", "black mamba");
+            return null;
+        }
+
+        @Override
+        public void messageIn(MessageBean msg) throws RemoteException {
+            Log.d(TAG, "messageIn: " + msg.toString());
+        }
+
+        @Override
+        public void messageOut(MessageBean msg) throws RemoteException {
+            Log.d(TAG, "messageOut: " + msg.toString());
+            msg.setName("James");
+            msg.setContent("is number.2");
+        }
+
+        @Override
+        public void messageInOut(MessageBean msg) throws RemoteException {
+            Log.d(TAG, "messageInOut: " + msg.toString());
+            msg.setName("Wade");
+            msg.setContent("flash man");
         }
     };
 
