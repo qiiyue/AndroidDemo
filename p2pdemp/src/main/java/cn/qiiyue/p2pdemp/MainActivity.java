@@ -11,6 +11,7 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         mPeerList = new ArrayList<>();
         mPeerAdapter = new PeerAdapter(this, mPeerList);
+        mContainerRl.setAdapter(mPeerAdapter);
 
     }
 
@@ -79,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         mSearchBtn = (Button) findViewById(R.id.btn_search);
         mContainerRl = (RecyclerView) findViewById(R.id.rl_container);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mContainerRl.setLayoutManager(layoutManager);
     }
 
     @Override
@@ -122,21 +126,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 连接设备
      */
-    public void connectPeer(WifiP2pDevice device) {
+    public void connectPeer(WifiP2pDevice device, WifiP2pManager.ActionListener actionListener) {
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = device.deviceAddress;
         config.wps.setup = WpsInfo.PBC;
-        mWifiP2pManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "connectPeer onSuccess");
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                Log.e(TAG, "connectPeer onFailure: " + reason);
-            }
-        });
+        mWifiP2pManager.connect(mChannel, config, actionListener);
     }
 
     /**
