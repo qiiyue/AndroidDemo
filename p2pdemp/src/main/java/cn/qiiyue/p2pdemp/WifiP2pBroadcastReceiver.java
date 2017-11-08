@@ -14,6 +14,13 @@ import android.net.wifi.p2p.WifiP2pManager;
  */
 
 public class WifiP2pBroadcastReceiver extends BroadcastReceiver {
+
+    private MainActivity activity;
+
+    public WifiP2pBroadcastReceiver(MainActivity activity) {
+        this.activity = activity;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -30,13 +37,13 @@ public class WifiP2pBroadcastReceiver extends BroadcastReceiver {
 
             NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo != null && networkInfo.isConnected()) {
-
+                activity.handleNetworkInfo(networkInfo);
             }
 
         } else if (WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION.equals(action)) {
 
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-
+            activity.requestPeer();
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
 
         }
