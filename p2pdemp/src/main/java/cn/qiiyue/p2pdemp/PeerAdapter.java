@@ -1,6 +1,8 @@
 package cn.qiiyue.p2pdemp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +26,8 @@ public class PeerAdapter extends RecyclerView.Adapter {
     private Context context;
     private MainActivity activity;
     private ArrayList<WifiP2pDevice> peers;
+    private int type = 0;//0-连接； 1-浏览文件； 2-
+    private String host;
 
     public PeerAdapter(Context context, ArrayList peers) {
         this.context = context;
@@ -46,7 +50,6 @@ public class PeerAdapter extends RecyclerView.Adapter {
     }
 
     private void initBtnClick(final Button btnConnectPeer, final WifiP2pDevice peer) {
-        final int type = 0;//0-连接； 1-浏览文件； 2-发送文件
         btnConnectPeer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +59,7 @@ public class PeerAdapter extends RecyclerView.Adapter {
                         public void onSuccess() {
                             Log.d(TAG, "connectPeer onSuccess");
                             btnConnectPeer.setText("发送文件");
+                            type = 1;
                         }
 
                         @Override
@@ -64,21 +68,38 @@ public class PeerAdapter extends RecyclerView.Adapter {
                         }
                     });
                 } else if (type == 1) {
-                    sendFile();
+                    host = peer.deviceAddress;
+                    selectFile();
+                } else if (type == 2) {
+
                 }
 
             }
         });
     }
 
-    private void sendFile() {
-        // TODO: 2017/11/8 发送文件
+    /**
+     * 使用系统功能选择图片
+     */
+    private void selectFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        activity.startActivityForResult(intent, activity.REQUEST_CODE_SELECT_FILE);
+    }
+
+    public void sendFile(Uri uri) {
+        Intent intent = new Intent(context, SendFileService.class);
+        intent.putExtra(SendFileService.EXTRA_HOST, host);
+        intent.putExtra(SendFileService.EXTRA_PORT, activity.SOCKET_PORT);
+        intent.putExtra(SendFileService.EXTRA_URI_STRING, uri.toString());
+        activity.startService(intent);
     }
 
     @Override
     public int getItemCount() {
         return peers.size();
     }
+
 
     class PeerViewHolder extends RecyclerView.ViewHolder {
 
@@ -91,6 +112,5 @@ public class PeerAdapter extends RecyclerView.Adapter {
             btnConnectPeer = itemView.findViewById(R.id.btn_connect_peer);
         }
     }
-
 
 }

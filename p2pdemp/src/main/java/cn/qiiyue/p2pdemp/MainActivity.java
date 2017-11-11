@@ -1,8 +1,10 @@
 package cn.qiiyue.p2pdemp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
+    public final int REQUEST_CODE_SELECT_FILE = 131;
+    public final int SOCKET_PORT = 8001;
     private WifiP2pManager mWifiP2pManager;
     private WifiP2pManager.Channel mChannel;
     private WifiP2pBroadcastReceiver mBroadcastReceiver;
@@ -97,6 +101,17 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(mBroadcastReceiver);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult requestCode: " + requestCode + " ; resultCode: " + resultCode);
+        if (requestCode == REQUEST_CODE_SELECT_FILE && resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            Log.d(TAG, "uri: " + uri.toString());
+            mPeerAdapter.sendFile(uri);
+        }
+    }
+
     /**
      * 查找设备
      */
@@ -146,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
             public void onConnectionInfoAvailable(WifiP2pInfo info) {
                 if (!info.groupFormed) return;
                 if (info.isGroupOwner) {
-// TODO: 2017/11/7 执行组长任务
+                    new FileAsyncTask().execute(MainActivity.this.getApplicationContext(), SOCKET_PORT);
                 } else {
 // TODO: 2017/11/7 执行普通组员任务
                 }

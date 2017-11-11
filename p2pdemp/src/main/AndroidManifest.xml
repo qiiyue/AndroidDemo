@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <receiver android:name=".WifiP2pBroadcastReceiver"/>
+        <service android:name=".SendFileService"/>
     </application>
 
 </manifest>
