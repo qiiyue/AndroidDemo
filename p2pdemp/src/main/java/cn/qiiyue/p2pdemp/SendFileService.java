@@ -50,7 +50,9 @@ public class SendFileService extends IntentService {
         Log.d(TAG, "uriStr: " + uriStr);
         Socket socket = new Socket();
         try {
+            socket.bind(null);
             socket.connect(new InetSocketAddress(host, port));
+            Log.d(TAG, "onHandleIntent connect");
             OutputStream outputStream = socket.getOutputStream();
             ContentResolver contentResolver = getContentResolver();
             InputStream inputStream;
@@ -59,6 +61,7 @@ public class SendFileService extends IntentService {
             Log.d(TAG, "try finish");
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e(TAG, "exception: " + e);
         } finally {
             try {
                 socket.close();

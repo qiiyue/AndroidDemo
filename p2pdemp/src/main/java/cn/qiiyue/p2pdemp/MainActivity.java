@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mContainerRl;
     private ArrayList<WifiP2pDevice> mPeerList;
     private PeerAdapter mPeerAdapter;
+    private WifiP2pInfo mWifiP2pInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,14 +161,28 @@ public class MainActivity extends AppCompatActivity {
         mWifiP2pManager.requestConnectionInfo(mChannel, new WifiP2pManager.ConnectionInfoListener() {
             @Override
             public void onConnectionInfoAvailable(WifiP2pInfo info) {
+                mWifiP2pInfo = info;
                 if (!info.groupFormed) return;
                 if (info.isGroupOwner) {
-                    new FileAsyncTask().execute(MainActivity.this.getApplicationContext(), SOCKET_PORT);
+                    mPeerAdapter.setOwner(true);
+                    new FileAsyncTask().execute(MainActivity.this, SOCKET_PORT);
                 } else {
 // TODO: 2017/11/7 执行普通组员任务
+                    mPeerAdapter.setOwner(false);
                 }
             }
         });
     }
 
+    public WifiP2pInfo getmWifiP2pInfo() {
+        return mWifiP2pInfo;
+    }
+
+    public void showImg(File file) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Log.d(TAG, "showImg: " + file);
+        intent.setDataAndType(Uri.parse("file://" + file), "image/*");
+        startActivity(intent);
+    }
 }

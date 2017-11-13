@@ -28,6 +28,7 @@ public class PeerAdapter extends RecyclerView.Adapter {
     private ArrayList<WifiP2pDevice> peers;
     private int type = 0;//0-连接； 1-浏览文件； 2-
     private String host;
+    private boolean isOwner;
 
     public PeerAdapter(Context context, ArrayList peers) {
         this.context = context;
@@ -58,8 +59,10 @@ public class PeerAdapter extends RecyclerView.Adapter {
                         @Override
                         public void onSuccess() {
                             Log.d(TAG, "connectPeer onSuccess");
-                            btnConnectPeer.setText("发送文件");
-                            type = 1;
+                            if (!isOwner) {
+                                btnConnectPeer.setText("发送文件");
+                                type = 1;
+                            }
                         }
 
                         @Override
@@ -71,7 +74,10 @@ public class PeerAdapter extends RecyclerView.Adapter {
                     host = peer.deviceAddress;
                     selectFile();
                 } else if (type == 2) {
-
+                    if (!isOwner) {
+                        btnConnectPeer.setText("发送文件");
+                        type = 1;
+                    }
                 }
 
             }
@@ -89,10 +95,14 @@ public class PeerAdapter extends RecyclerView.Adapter {
 
     public void sendFile(Uri uri) {
         Intent intent = new Intent(context, SendFileService.class);
-        intent.putExtra(SendFileService.EXTRA_HOST, host);
+        intent.putExtra(SendFileService.EXTRA_HOST, activity.getmWifiP2pInfo().groupOwnerAddress.getHostAddress());
         intent.putExtra(SendFileService.EXTRA_PORT, activity.SOCKET_PORT);
         intent.putExtra(SendFileService.EXTRA_URI_STRING, uri.toString());
         activity.startService(intent);
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 
     @Override

@@ -1,8 +1,6 @@
 package cn.qiiyue.p2pdemp;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -23,10 +21,12 @@ public class FileAsyncTask extends AsyncTask {
     private int port;
     private File file;
     private Context context;
+    private MainActivity activity;
 
     @Override
     protected Object doInBackground(Object[] objects) {
         context = (Context) objects[0];
+        activity = (MainActivity)context;
         port = (int) objects[1];
         try {
             ServerSocket serverSocket = new ServerSocket(port);
@@ -43,10 +43,8 @@ public class FileAsyncTask extends AsyncTask {
 
     @Override
     protected void onPostExecute(Object o) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse("file://" + file), "image/*");
-        context.startActivity(intent);
+
+        activity.showImg(file);
     }
 
 }
